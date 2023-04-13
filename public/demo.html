@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Date/Time Duration</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        td {
+            padding: 8px;
+        }
+        th{
+            padding: 8px;
+        }
+        #loader {
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Date/Time Duration</h1>
+        <form id="datetime-form">
+            <label for="datetime-input">Date and Time:</label>
+            <input type="text" id="datetime-input" name="datetime" value ="2021-03-13T07:40:00Z"required>
+          
+            <label for="duration-input">Duration:</label>
+            <input type="text" id="duration-input" name="duration" value = "00:20:00"required>
+          
+            <button type="submit">Submit</button>
+        </form>
+        <hr>
+        <h2>Result</h2>
+        <div id="loader" style="display: none;">
+            <!-- <img src="https://i.imgur.com/EJZv0MH.gif" alt="Loader"> -->
+        </div>
+        <div id="results">
+            
+        </div>
+    </div>
+    <script>
+const form = document.getElementById('datetime-form');
+const tableBody = document.querySelector('#results-table tbody');
+const loader = document.getElementById('loader');
+// const mainTable = document.getElementById('results-table');
+const resultsDiv = document.getElementById('results');
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  loader.style.display = 'block';
+  const formData = new FormData(event.target);
+  const datetime = formData.get('datetime');
+  const duration = formData.get('duration');
+  console.log(datetime)
+  console.log(duration)
+//   mainTable.style.display = 'none';
+  const response = await fetch('http://localhost:4000/api/datetime', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ datetime, duration }),
+  });
+
+  loader.style.display = 'none';
+//   mainTable.style.display = 'block';
+  if (response.ok) {
+    const data = await response.json();
+    console.log(data)
+    // Clear previous results from the table
+    // Loop through each object in the array and create a new row in the table
+    data.forEach((item) => {
+  // create a top line element
+  const topLine = document.createElement('div');
+  topLine.classList.add('top-line');
+  const date = new Date(item.top.DateTime); // example date in UTC
+    const localDate = date.toLocaleDateString(); // get local date string
+    const localTime = date.toLocaleTimeString(); // get local time string
+
+  let topLineString = `Edge. Orig=${item.top.Orig} Edge. Dest=${item.top.Dest} Date=${localDate} Time=${localTime} Drv=${item.top.Drv} Capacity=${item.top.Capacity} Maxwait=${item.top.MaxWait} FixedRoute=${item.top.FixedRoute}`
+
+//   topLine.innerText = `Top line: ${JSON.stringify(item.top)}`;
+    topLine.innerText = topLineString;
+  // create an indent line for Orig
+  const origLine = document.createElement('div');
+  origLine.innerText = `\t\tOrig=${item.indent.Orig}`;
+  origLine.style.paddingLeft='3.5%'
+  // create an indent line for Dest
+  const destLine = document.createElement('div');
+  destLine.innerText = `\t\tDest=${item.indent.Dest}`;
+  destLine.style.paddingLeft='3.5%'
+  // create a container element to hold the top and indent lines
+  const resultContainer = document.createElement('div');
+  resultContainer.style.paddingBottom='2%'
+  resultContainer.appendChild(topLine);
+  resultContainer.appendChild(origLine);
+  resultContainer.appendChild(destLine);
+
+  // append the container element to the resultsDiv element in the HTML
+  resultsDiv.appendChild(resultContainer);
+});
+  } else {
+    console.error('Failed to fetch data from server');
+  }
+});
+    </script>
+</body>
+</html>

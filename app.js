@@ -187,6 +187,7 @@ app.use(express.static("public"));
 
 app.post("/api/datetime", getNodesBasedOnDateTimePost)
 app.use((req, res, next) => {
+    console.log(req.url)
     if (req.url === "/demo") {
         res.sendFile(path.join(__dirname, "public", "demo.html"));
     } else {

@@ -82,11 +82,13 @@ form.addEventListener('submit', async (event) => {
   // create a top line element
   const topLine = document.createElement('div');
   topLine.classList.add('top-line');
-  const date = new Date(item.top.DateTime); // example date in UTC
+  const date = new Date(item.top.DateTime);
+  let split = item.top.DateTime.replace(".000Z","").split("T")
+
     const localDate = date.toLocaleDateString(); // get local date string
     const localTime = date.toLocaleTimeString(); // get local time string
 
-  let topLineString = `Edge. Orig=${item.top.Orig} Edge. Dest=${item.top.Dest} Date=${localDate} Time=${localTime} Drv=${item.top.Drv} Capacity=${item.top.Capacity} Maxwait=${item.top.MaxWait} FixedRoute=${item.top.FixedRoute}`
+  let topLineString = `Edge. Orig=${item.top.Orig} Edge. Dest=${item.top.Dest} Date=${split[0]} Time=${split[1]} Drv=${item.top.Drv} Capacity=${item.top.Capacity} Maxwait=${item.top.MaxWait} FixedRoute=${item.top.FixedRoute}`
 
 //   topLine.innerText = `Top line: ${JSON.stringify(item.top)}`;
     topLine.innerText = topLineString;

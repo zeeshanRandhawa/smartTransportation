@@ -56,8 +56,10 @@ const tableBody = document.querySelector('#results-table tbody');
 const loader = document.getElementById('loader');
 // const mainTable = document.getElementById('results-table');
 const resultsDiv = document.getElementById('results');
+
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
+  resultsDiv.innerHTML = "";
   loader.style.display = 'block';
   const formData = new FormData(event.target);
   const datetime = formData.get('datetime');
@@ -70,7 +72,7 @@ form.addEventListener('submit', async (event) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ datetime, duration }),
   });
-
+resultsDiv.innerHTML = "";
   loader.style.display = 'none';
 //   mainTable.style.display = 'block';
   if (response.ok) {

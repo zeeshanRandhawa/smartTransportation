@@ -186,13 +186,14 @@ app.use(express.urlencoded({ limit: "50mb" }));
 app.use(express.static("public"));
 
 app.post("/api/datetime", getNodesBasedOnDateTimePost)
-app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "index.html"));
-  });
-  
-  app.get("/demo", (req, res) => {
+app.get("/demo", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "demo.html"));
   });
+// app.get("/", (req, res) => {
+//     res.sendFile(path.join(__dirname, "public", "index.html"));
+//   });
+  
+
   
 
 module.exports = app;
